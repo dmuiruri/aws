@@ -1,0 +1,15 @@
+# ignore html file
+*.html
+
+# ignore csv files
+*.csv
+
+# ignore json files
+*.json
+
+# ignore emacs backup files
+*.~
+
+# ignore txt file
+*.txt
+
