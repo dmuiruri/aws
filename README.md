@@ -14,5 +14,5 @@ setup at `~/.aws/credentials`
 To run this file, the index.html file needs to be in the folder where
 the script is running from.
 
-The script could be extended to be more generic and listen to all file
-in a folder that may require to be updated to the AWS cloud
+The script could be extended to be more generic and listen to all files
+in a folder that may require to be updated to the AWS cloud.
