@@ -15,11 +15,12 @@ in the background when editing of files is ongoing.
 
 Notably, such a script can be used to complement AWS S3 bucket's
 lifecycle feature if needed. The life cycle feature can be configured
-to transition objects or files between various storage classes,
-typically optimizing costs based on how often a file is accessed or
-read. Amazon offers storage tiers that have 99.5% availability which
-would be cheaper than those with 99.999% availability although they
-still promise to offer low latency and high accessibility for these
+to transition objects or files between various [storage
+classes](https://aws.amazon.com/s3/storage-classes/). Typically
+optimizing costs based on how often a file is accessed or read. Amazon
+offers storage tiers that have 99.5% availability which would be
+cheaper than those with 99.999% availability although they still
+promise to offer low latency and high accessibility for these
 files. At the very end of a file's life cycle, it could go into an
 archive class.
 
@@ -30,7 +31,8 @@ modified by looking at the *Time of most recent content modification
 expressed in seconds.*
 
 In Python
-```
+
+```python
 import os
 
 mtime = os.stat(filepath).st_mtime
