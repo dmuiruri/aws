@@ -52,3 +52,6 @@ name) for example when used for website hosting, the domain name can
 be found from the buckets "Properties => Static Web hosting" tab, more
 details can be found
 [here](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html).
+
+AWS cli commands to work with S3 can be found
+[here](https://docs.aws.amazon.com/cli/latest/userguide/cli-services-s3-commands.html).
