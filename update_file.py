@@ -23,28 +23,30 @@ class FileChecker(object):
         self._ftstamp = 0
         self._path = path
         self._files = {}
+        self._uploadfiles = []
         self._delay_sec = delay_sec
         self.args = args
         self.kwargs = kwargs
 
     def folderscanner(self):
-        """Check entire directory for updated files."""
+        """Get current time stamps."""
         ignored_dirs = ('__pycache__', '.git')
         for p, dirs, fs in os.walk(self._path):
             for d in ignored_dirs:
                 if d in dirs:
                     dirs.remove(d)
-            for filename in fs:
-                self._files['{}/{}'.format(p, filename)] = 0
+            for fn in fs:
+                fp = '{}/{}'.format(p, fn)
+                self._files[fp] = os.stat(fp).st_mtime
 
     def check(self):
         """Check if the file has changed based on time stamp."""
         # dirpath, dirnames, filenames
-        self.folderscanner()
+        # self.folderscanner()
         for key in self._files:
-            stamp = os.stat(self._files[key]).st_mtime
-            if stamp != self._ftstamp:
-                self._ftstamp = stamp
+            stamp = os.stat(key).st_mtime
+            if stamp != self._files[key]:
+                self._uploadfiles.append(key)
                 # print("\n{}".format(subprocess.check_call(
                 #       ["aws", "s3", "ls", "s3://dm240bucket"])))
                 # try:
@@ -57,6 +59,7 @@ class FileChecker(object):
     def poll(self):
         """Poll and listen for changes on the given file."""
         print(">>> Polling...")
+        self.folderscanner()
         while self.running:
             try:
                 sleep(self._delay_sec)
@@ -69,9 +72,10 @@ class FileChecker(object):
                 print("*****The file is not found*****")
                 break
             else:
-                updated = strftime("%a, %d %b %Y %H:%M:%S", localtime())
-                with open('index.html', 'a+') as f_:
-                    f_.write('<br> Last Update: {}'.format(updated))
+                print('{}'.format(self._uploadfiles))
+                # updated = strftime("%a, %d %b %Y %H:%M:%S", localtime())
+                # with open('index.html', 'a+') as f_:
+                #     f_.write('<br> Last Update: {}'.format(updated))
                 # print("Unhandled Error".format(sys.exc_info()[0]))
 
 
