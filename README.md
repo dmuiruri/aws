@@ -26,15 +26,15 @@ archive class.
 ## Design Observations
 
 The approach taken in this script is to check whether a file has been
-modified by looking at the ``Time of most recent content modification
-expressed in seconds.``
+modified by looking at the *Time of most recent content modification
+expressed in seconds.*
 
 In Python
-`
+```
 import os
 
 mtime = os.stat(filepath).st_mtime
-`
+```
 
 If a file is saved (save icon or key press) the metadata is changed to
 show that the file has been modified even though no new content has
