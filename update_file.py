@@ -18,27 +18,38 @@ class FileChecker(object):
 
     running = True
 
-    def __init__(self, file_, delay_sec=1, *args, **kwargs):  # callback=None
+    def __init__(self, path='.', delay_sec=5, *args, **kwargs):
         """Iniitalize the FileChecker."""
         self._ftstamp = 0
-        self._filename = file_
+        self._path = path
+        self._files = {}
         self._delay_sec = delay_sec
         self.args = args
         self.kwargs = kwargs
 
+    def folderscanner(self):
+        """Check entire directory for updated files."""
+        for p, dirs, fs in os.walk(self._path):
+            dirs.remove('__pycache__')
+            for filename in fs:
+                self._files['{}/{}'.format(p, filename)] = 0
+
     def check(self):
         """Check if the file has changed based on time stamp."""
-        stamp = os.stat(self._filename).st_mtime
-        if stamp != self._ftstamp:
-            self._ftstamp = stamp
-            # print("\n{}".format(subprocess.check_call(
-            #       ["aws", "s3", "ls", "s3://dm240bucket"])))
-            try:
-                subprocess.check_call(["aws", "s3", "cp", "./index.html",
-                                       "s3://dm240bucket"])
-                print("Updated file copied to S3 {}")
-            except Exception as e:
-                print("File not copied {}".format(e))
+        # dirpath, dirnames, filenames
+        self.folderscanner()
+        for key in self._files:
+            stamp = os.stat(self._files[key]).st_mtime
+            if stamp != self._ftstamp:
+                self._ftstamp = stamp
+                # print("\n{}".format(subprocess.check_call(
+                #       ["aws", "s3", "ls", "s3://dm240bucket"])))
+                # try:
+                #     subprocess.check_call(["aws", "s3", "cp", "./index.html",
+                #                            "s3://dm240bucket"])
+                #     print("Updated file copied to S3 {}")
+                # except Exception as e:
+                #     print("File not copied {}".format(e))
 
     def poll(self):
         """Poll and listen for changes on the given file."""
@@ -47,6 +58,7 @@ class FileChecker(object):
             try:
                 sleep(self._delay_sec)
                 self.check()
+                print('{}\n'.format(self._files))
             except KeyboardInterrupt:
                 print("\n*****Program Exited*****\n")
                 break
@@ -61,5 +73,5 @@ class FileChecker(object):
 
 
 if __name__ == '__main__':
-    f = FileChecker('index.html', delay_sec=20)
+    f = FileChecker('.', delay_sec=6)
     f.poll()
