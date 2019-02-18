@@ -2,7 +2,7 @@
 
 This module implements a mechanisim to backup a given folder to an AWS
 bucket as soon as the contents change i.e as it is edited and
-saved. That is done by tracking the files timestamps. Currently the
+saved. That is achieved by tracking a file's timestamps. Currently the
 approach implemented uses polling and specifically listens to changes
 in the files and when changes are detected an AWS CLI command to
 update the file in the S3 bucket is issued. 
@@ -11,7 +11,7 @@ AWS command: `aws s3 cp file.html s3://bucket`
 
 For the aws command to work, the proper credentials would need to be
 setup at `~/.aws/credentials` and this script would need to be running
-in the background.
+in the background when editing of files is ongoing.
 
 Notably, such a script can be used to complement AWS S3 bucket's
 lifecycle feature if needed. The life cycle feature can be configured
