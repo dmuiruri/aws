@@ -26,3 +26,21 @@ would be cheaper than those with 99.999% availability although they
 still promise to offer low latency and high accessibility for these
 files. At the very end of a file's life cycle, it could go into an
 archive class.
+
+## Design Observations
+
+The approach taken in this script is to check whether a file has been
+modified by looking at the ``Time of most recent content modification
+expressed in seconds.``
+
+In Python
+`
+import os
+
+mtime = os.stat(filepath).st_mtime
+`
+
+If a file is saved (save icon or key press) the metadata is changed to
+show that the file has been modified even though no new content has
+been added or removed. This can either be a desirable feature or cause
+unnecessary bandwidth consumption in a large deployment.
