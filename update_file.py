@@ -47,6 +47,7 @@ class FileChecker(object):
             stamp = os.stat(key).st_mtime
             if stamp != self._files[key]:
                 self._uploadfiles.append(key)
+                self._files[key] = stamp
                 # print("\n{}".format(subprocess.check_call(
                 #       ["aws", "s3", "ls", "s3://dm240bucket"])))
                 # try:
