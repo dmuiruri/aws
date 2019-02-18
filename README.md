@@ -1,21 +1,17 @@
 # Overview
 
-This module implements a mechanisim to update the index file as soon
-as it changes as it is edited and saved, -tracking the file's
-timestamp. Currently the approach implemented uses polling and
-specifically listens to changes in the index file and run an AWS CLI
-command to update the file in the S3 bucket. 
+This module implements a mechanisim to backup a given folder to an AWS
+bucket as soon as the contents change i.e as it is edited and
+saved. That is done by tracking the files timestamps. Currently the
+approach implemented uses polling and specifically listens to changes
+in the files and when changes are detected an AWS CLI command to
+update the file in the S3 bucket is issued. 
 
 AWS command: `aws s3 cp file.html s3://bucket`
 
 For the aws command to work, the proper credentials would need to be
-setup at `~/.aws/credentials`
-
-To run this file, the index.html file needs to be in the folder where
-the script is running from.
-
-The script could be extended to be more generic and listen to all files
-in a folder that may require to be updated to the AWS cloud.
+setup at `~/.aws/credentials` and this script would need to be running
+in the background.
 
 Notably, such a script can be used to complement AWS S3 bucket's
 lifecycle feature if needed. The life cycle feature can be configured
@@ -43,4 +39,6 @@ mtime = os.stat(filepath).st_mtime
 If a file is saved (save icon or key press) the metadata is changed to
 show that the file has been modified even though no new content has
 been added or removed. This can either be a desirable feature or cause
-unnecessary bandwidth consumption in a large deployment.
+unnecessary bandwidth consumption in a large deployment. Perhaps a
+more elegent solution would be to have some system timers that would
+fireup when and if a file changes instead of a busy loop.
