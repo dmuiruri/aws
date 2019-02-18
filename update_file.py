@@ -18,15 +18,13 @@ class FileChecker(object):
 
     running = True
 
-    def __init__(self, path='.', delay_sec=5, *args, **kwargs):
+    def __init__(self, path='.', delay_sec=5):
         """Iniitalize the FileChecker."""
         self._ftstamp = 0
         self._path = path
         self._files = {}
         self._uploadfiles = []
         self._delay_sec = delay_sec
-        self.args = args
-        self.kwargs = kwargs
 
     def folderscanner(self):
         """Get current time stamps."""
@@ -83,5 +81,5 @@ class FileChecker(object):
 
 
 if __name__ == '__main__':
-    f = FileChecker('.', delay_sec=6)
+    f = FileChecker(path='.', delay_sec=6)
     f.poll()
