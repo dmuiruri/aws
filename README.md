@@ -1,11 +1,12 @@
 # Overview
 
 This module implements a mechanisim to backup a given folder to an AWS
-bucket as soon as the contents change i.e as it is edited and
-saved. That is achieved by tracking a file's timestamps. Currently the
-approach implemented uses polling and specifically listens to changes
-in the files and when changes are detected an AWS CLI command to
-update the file in the S3 bucket is issued. 
+bucket as soon as the contents change i.e as files are being edited
+and saved. This module achieves that functionality by tracking a
+file's timestamps. Currently the approach implemented uses polling and
+specifically listens to changes in the files and when changes are
+detected an AWS CLI command to update the file in the S3 bucket is
+issued.
 
 AWS command: `aws s3 cp file.html s3://bucket`
 
