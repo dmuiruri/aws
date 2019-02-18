@@ -29,8 +29,11 @@ class FileChecker(object):
 
     def folderscanner(self):
         """Check entire directory for updated files."""
+        ignored_dirs = ('__pycache__', '.git')
         for p, dirs, fs in os.walk(self._path):
-            dirs.remove('__pycache__')
+            for d in ignored_dirs:
+                if d in dirs:
+                    dirs.remove(d)
             for filename in fs:
                 self._files['{}/{}'.format(p, filename)] = 0
 
