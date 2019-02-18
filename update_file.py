@@ -39,23 +39,25 @@ class FileChecker(object):
                 fp = '{}/{}'.format(p, fn)
                 self._files[fp] = os.stat(fp).st_mtime
 
+    def uploader(self):
+        """Upload files to an AWS S3 bucket."""
+        for file in self._uploadfiles:
+            try:
+                subprocess.check_call(["aws", "s3", "cp", file,
+                                       "s3://dm240bucket"])
+                self._uploadfiles.remove(file)
+            except Exception as e:
+                print("File not copied {}".format(e))
+                raise
+
     def check(self):
         """Check if the file has changed based on time stamp."""
-        # dirpath, dirnames, filenames
-        # self.folderscanner()
         for key in self._files:
             stamp = os.stat(key).st_mtime
             if stamp != self._files[key]:
                 self._uploadfiles.append(key)
                 self._files[key] = stamp
-                # print("\n{}".format(subprocess.check_call(
-                #       ["aws", "s3", "ls", "s3://dm240bucket"])))
-                # try:
-                #     subprocess.check_call(["aws", "s3", "cp", "./index.html",
-                #                            "s3://dm240bucket"])
-                #     print("Updated file copied to S3 {}")
-                # except Exception as e:
-                #     print("File not copied {}".format(e))
+        self.uploader()
 
     def poll(self):
         """Poll and listen for changes on the given file."""
