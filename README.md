@@ -1,4 +1,4 @@
-# Overview
+# Overview of Automating Backup Using AWS S3
 
 This module implements a mechanisim to backup a given folder to an AWS
 bucket as soon as the contents change i.e as files are being edited
@@ -45,3 +45,10 @@ been added or removed. This can either be a desirable feature or cause
 unnecessary bandwidth consumption in a large deployment. Perhaps a
 more elegent solution would be to have some system timers that would
 fireup when and if a file changes instead of a busy loop.
+
+PS: A typical usecase where automating backup may be required is when
+hosting static websites. To access a public bucket's endpoint(domain
+name) for example when used for website hosting, the domain name can
+be found from the buckets "Properties => Static Web hosting" tab, more
+details can be found
+[here](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html).
