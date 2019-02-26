@@ -31,18 +31,10 @@ def handler(event, context):
                     'AttributeName': 'id',
                     'KeyType': 'HASH'
                     },
-                {
-                    'AttributeName': 'name',
-                    'KeyType': 'RANGE'
-                    }
                 ],
             AttributeDefinitions=[
                 {
                     'AttributeName': 'id',
-                    'AttributeType': 'S'
-                    },
-                {
-                    'AttributeName': 'name',
                     'AttributeType': 'S'
                     },
                 ],
