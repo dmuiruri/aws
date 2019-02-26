@@ -14,3 +14,5 @@
 # ignore txt file
 *.txt
 
+# ignore zip files
+*.zip
