@@ -45,21 +45,23 @@ def handler(event, context):
             )
         table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
         print(">>> Table item count {}".format(table.item_count))
-        try:
-            resp = table.put_item(
-                TableName=table_name,
-                Item=event
-                )
-        except Exception as e:
-            print ("Writing to table failed with error: {}".format(e))
+        for record in event:
+            try:
+                resp = table.put_item(
+                    TableName=table_name,
+                    Item=record
+                    )
+            except Exception as e:
+                print ("Writing to table failed with error: {}".format(e))
     except client.exceptions.ResourceInUseException:
         table = dynamodb.Table(table_name)
         table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
         print(">>> Table item count {}".format(table.item_count))
-        try:
-            resp = table.put_item(
-                TableName=table_name,
-                Item=event
-                )
-        except Exception as e:
-            print ("Writing to table failed with error: {}".format(e))
+        for record in event:
+            try:
+                resp = table.put_item(
+                    TableName=table_name,
+                    Item=record
+                    )
+            except Exception as e:
+                print ("Writing to table failed with error: {}".format(e))
