@@ -1,29 +1,150 @@
-﻿<!doctype html>
+<!doctype>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>Hello</title>
-	</head>
-	<body>
-		<h1>Welcome World!</h1>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing
-		elit, sed do eiusmod tempor incididunt ut labore et
-		dolore magna aliqua. Ut enim ad minim veniam, quis
-		nostrud exercitation ullamco laboris nisi ut aliquip
-		ex ea commodo consequat. Duis aute irure dolor in
-		reprehenderit in voluptate velit esse cillum dolore eu
-		fugiat nulla pariatur. Excepteur sint occaecat
-		cupidatat non proident, sunt in culpa qui officia
-		deserunt mollit anim id est laborum.</p>
-		<br>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing
-		elit, sed do eiusmod tempor incididunt ut labore et
-		dolore magna aliqua. Ut enim ad minim veniam, quis
-		nostrud exercitation ullamco laboris nisi ut aliquip
-		ex ea commodo consequat. Duis aute irure dolor in
-		reprehenderit in voluptate velit esse cillum dolore eu
-		fugiat nulla pariatur. Excepteur sint occaecat
-		cupidatat non proident, sunt in culpa qui officia
-		deserunt mollit anim id est laborum.
-	</body>
+
+<head>
+    <meta charset="utf-8">
+    <title>To-Do</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        section {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        
+        #output {
+            background-color: #eee;
+            border-color: #ddd;
+            min-height: 100px;
+            position: relative;
+            padding-top: 25px;
+        }
+        
+        #output:before {
+            content: "Output";
+            display: inline-block;
+            position: absolute;
+            background-color: #555;
+            color: #fff;
+            padding: 3px 6px;
+            top: 0;
+            left: 0;
+            border-bottom-right-radius: 5px;
+            font-size: 10px;
+            font-family: sans-serif;
+        }
+    </style>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        // -------------------------------------------------------------- //
+        // INSERT YOUR API URL HERE (without a forward slash at the end)
+        var API_URL = '';
+        // -------------------------------------------------------------- //
+
+        function sendRequest(method, path, body) {
+
+            var output = document.getElementById('output');
+            var message = document.getElementById('message');
+            output.innerHTML = '';
+            var url = API_URL + path;
+            
+            message.style.color='#999';
+            message.innerHTML='Sending request...';
+
+            if (method == 'get') {
+                var request = axios.get(url, {
+                    params: body
+                });
+            } else {
+                var request = axios.post(url, body);
+            }
+
+            request.then(function(response) {
+                    message.style.color='green';
+                    message.innerHTML='Request succeeded';
+                    output.innerHTML = JSON.stringify(response.data, null, 2);
+                })
+                .catch(function(error) {
+                    message.style.color='red';
+                    message.innerHTML='Request failed';
+                    output.innerHTML = JSON.stringify(error, null, 2);
+                });
+        }
+
+        function getOne() {
+            var id = document.getElementById('get-one-id').value;
+            sendRequest('get', '/get', {
+                id: id
+            });
+        }
+
+        function getAll() {
+            sendRequest('get', '/');
+        }
+
+        function add() {
+            var id = document.getElementById('add-id').value;
+            var name = document.getElementById('add-name').value;
+            sendRequest('post', '/add', {
+                id: id,
+                name: name
+            });
+        }
+
+        function remove() {
+            var id = document.getElementById('remove-id').value;
+            sendRequest('post', '/remove', {
+                id: id
+            });
+        }
+
+        function update(status) {
+            var id = document.getElementById('update-id').value;
+            sendRequest('post', '/update', {
+                id: id,
+                done: status
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="content">
+        <section>
+            <input type="button" value="Get all tasks" name="get-all" id="get-all" onclick="getAll()">
+        </section>
+        <section>
+            <input type="text" name="get-one-id" id="get-one-id" placeholder="ID">
+            <input type="button" name="get-one-submit" id="get-one-submit" value="Get task by ID" onclick="getOne()">
+        </section>
+        <section>
+            <input type="text" name="add-id" id="add-id" placeholder="ID">
+            <input type="text" name="add-name" id="add-name" placeholder="Name">
+            <input type="button" name="add-submit" id="add-submit" value="Add new task" onclick="add()">
+        </section>
+        <section>
+            <input type="text" name="remove-id" id="remove-id" placeholder="ID">
+            <input type="button" name="remove-submit" id="remove-submit" value="Remove task" onclick="remove()">
+        </section>
+        <section>
+            <input type="text" name="update-id" id="update-id" placeholder="ID">
+            <input type="button" name="mark-done-submit" id="mark-done-submit" value="Mark task done" onclick="update(true)">
+            <input type="button" name="mark-done-submit" id="mark-undone-submit" value="Mark task undone" onclick="update(false)">
+        </section>
+        <section id="message"></section>
+        <section>
+            <pre id="output">
+            </pre>
+        </section>
+    </div>
+</body>
+
 </html>
