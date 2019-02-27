@@ -33,6 +33,13 @@ def fetchAll_handler(event, context):
         resp = table.scan(
             TableName=table_name
             )
-        return resp["Items"]
+        # return value as a JSON string
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin" : "*",
+            },
+            "body": json.dumps(resp["Items"])
+        }
     except Exception as e:
         print("Fetching all tasks failed: {}".format(e))
