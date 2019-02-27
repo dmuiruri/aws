@@ -5,14 +5,15 @@ A lambda function to update an object in DynamoDB
 
 Test item
 {
-"id": {"S": "1"},
-"done": {"BOOL": true}
+"id":  "1",
+"done": true
 }
 """
 import boto3
 
-dynamodb = boto3.resource('dynamodb')  # endpoint_url="http://localhost:8000
+dynamodb = boto3.resource('dynamodb')
 client = boto3.client('dynamodb')
+table_name = 'todolist'
 
 def updateTaskStatus_handler(event, context):
     """
@@ -20,9 +21,10 @@ def updateTaskStatus_handler(event, context):
 
     input is an object with a task id
     """
+    table = dynamodb.Table(table_name)
     try:
-        resp = client.update_item(
-            TableName='todolist',
+        resp = table.update_item(
+            TableName=table_name,
             Key={
                 "id": event['id']
                 },

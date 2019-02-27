@@ -20,17 +20,19 @@ Expected output:
 """
 import boto3
 
-dynamodb = boto3.resource('dynamodb')  # endpoint_url="http://localhost:8000
+dynamodb = boto3.resource('dynamodb')
 client = boto3.client('dynamodb')
+table_name = 'todolist'
 
 def fetchAll_handler(event, context):
     """
     Fetch all tasks in the dynamoDB table
-
     """
+    table = dynamodb.Table(table_name)
     try:
-        resp = client.scan(
-            TableName='todolist'
+        resp = table.scan(
+            TableName=table_name
             )
+        return resp["Items"]
     except Exception as e:
         print("Fetching all tasks failed: {}".format(e))
