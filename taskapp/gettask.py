@@ -21,9 +21,12 @@ def gettask_handler(event, context):
 
     input is an object with a task id.
 
-    The API Gateway has a request body item that contains the
-    parameters to be passed to the API endpoint, the object is already
-    a dictionary which we can pass to dynamoDB.
+    The API Gateway delivers GET requests and a POST body to the
+    lambda functions within lambda's event object. The events object
+    contains the entire Endpoint request body containing objects such
+    as
+    "queryStringParameters":{"id":"2"},"multiValueQueryStringParameters"
+    etc.
 
     In order for API Gateway to actually deliver the output, the
     returned object has to contain at least a statusCode and a
