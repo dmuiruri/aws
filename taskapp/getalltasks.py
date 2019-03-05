@@ -21,7 +21,6 @@ Expected output:
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
-client = boto3.client('dynamodb')
 table_name = 'todolist'
 
 def fetchAll_handler(event, context):
@@ -33,13 +32,12 @@ def fetchAll_handler(event, context):
         resp = table.scan(
             TableName=table_name
             )
-        # return value as a JSON string
         return {
             "statusCode": 200,
             "headers": {
                 "Access-Control-Allow-Origin" : "*",
             },
-            "body": json.dumps(resp["Items"])
+            "body": json.dumps(resp["Items"]) #<return value as a JSON string>
         }
     except Exception as e:
         print("Fetching all tasks failed: {}".format(e))
