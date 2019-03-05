@@ -8,9 +8,9 @@ Expected input:
 }
 """
 import boto3
+import json
 
-dynamodb = boto3.resource('dynamodb')  # endpoint_url="http://localhost:8000
-client = boto3.client('dynamodb')
+dynamodb = boto3.resource('dynamodb')
 table_name = 'todolist'
 
 def removeTask_handler(event, context):
@@ -22,10 +22,12 @@ def removeTask_handler(event, context):
     try:
         resp = table.delete_item(
             TableName=table_name,
-            Key={
-                "id": event["id"]
-                }
+            Key=event["queryStringParameters"]
             )
-        return resp
+        return {
+            "statusCode":200,
+            "headers": {"Access-Control-Allow-Origin" : "*",},
+            "body": json.dumps(resp)
+        }
     except Exception as e:
-        print("Removing task id: {} failed: {}".format(event["id"], e))
+        print("Removing task failed: {}".format(e))
