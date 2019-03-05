@@ -19,8 +19,8 @@ def handler(event, context):
     
     Expects input in the following format in lambda testing environment
     {
-    "id": {"S": "1"},
-    "name: {"S": "New task"}
+    "id": "1",
+    "name: New task"
     }
     """
     try:
@@ -44,22 +44,25 @@ def handler(event, context):
                 }
             )
         table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
-        print(">>> Table item count {}".format(table.item_count))
         try:
             resp = table.put_item(
-                TableName=table_name,
-                Item=event
+                Item=event["queryStringParameters"]
                 )
         except Exception as e:
             print ("Writing to table failed with error: {}".format(e))
     except client.exceptions.ResourceInUseException:
         table = dynamodb.Table(table_name)
-        table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
-        print(">>> Table item count {}".format(table.item_count))
         try:
             resp = table.put_item(
-                TableName=table_name,
-                Item=event
+                Item=event["queryStringParameters"],
+                ReturnValues='NONE'
                 )
+            return {
+                "statusCode": 200,
+                "headers": {
+                    "Access-Control-Allow-Origin" : "*",
+                },
+                "body": json.dumps(resp)
+            }
         except Exception as e:
-            print ("Writing to table failed with error: {}".format(e))
+            return json.dumps(e)
