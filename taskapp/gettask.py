@@ -12,7 +12,6 @@ import boto3
 import json
 
 dynamodb = boto3.resource('dynamodb')
-client = boto3.client('dynamodb')
 table_name = 'todolist'
 
 def gettask_handler(event, context):
@@ -40,17 +39,15 @@ def gettask_handler(event, context):
     }
     """
     table = dynamodb.Table(table_name)
+    key = event['queryStringParameters']
     try:
         resp = table.get_item(
-            TableName=table_name,
-            Key=event['requestStringParameters']
+            Key=key
             )
-        return {
+        return{
             "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin" : "*",
-                },
-            "body": json.dumps(resp["Item"]) # <return value as a JSON string>
+            "headers": {"Access-Control-Allow-Origin" : "*",},
+            "body": json.dumps(resp["Item"])
             }
     except Exception as e:
         print("Getting an object from table failed: {}".format(e))
