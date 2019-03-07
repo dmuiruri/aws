@@ -22,6 +22,8 @@ def handler(event, context):
     "id": "1",
     "name: New task"
     }
+
+    Note: POST requests pass a body and not queryStringParameters
     """
     try:
         table = dynamodb.create_table(
@@ -46,7 +48,7 @@ def handler(event, context):
         table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
         try:
             resp = table.put_item(
-                Item=event["queryStringParameters"]
+                Item=event["body"]
                 )
         except Exception as e:
             print ("Writing to table failed with error: {}".format(e))
@@ -54,7 +56,7 @@ def handler(event, context):
         table = dynamodb.Table(table_name)
         try:
             resp = table.put_item(
-                Item=event["queryStringParameters"],
+                Item=event["body"],
                 ReturnValues='NONE'
                 )
             return {
@@ -65,4 +67,10 @@ def handler(event, context):
                 "body": json.dumps(resp)
             }
         except Exception as e:
-            return json.dumps(e)
+            return {
+                "statusCode": 500,
+                "headers": {
+                    "Access-Control-Allow-Origin": "*"
+                    },
+                "body": json.dumps(str(e))
+               }
