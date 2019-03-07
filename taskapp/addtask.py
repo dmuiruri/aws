@@ -56,7 +56,7 @@ def handler(event, context):
         table = dynamodb.Table(table_name)
         try:
             resp = table.put_item(
-                Item=event["body"],
+                Item = json.loads(event["body"]),
                 ReturnValues='NONE'
                 )
             return {

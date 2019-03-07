@@ -22,12 +22,20 @@ def removeTask_handler(event, context):
     try:
         resp = table.delete_item(
             TableName=table_name,
-            Key=event["queryStringParameters"]
+            Key=json.loads(event["body"])
             )
         return {
-            "statusCode":200,
-            "headers": {"Access-Control-Allow-Origin" : "*",},
+            "statusCode": 200,
+            "headers": {
+                "Access-Control-Allow-Origin" : "*"
+                },
             "body": json.dumps(resp)
-        }
+            }
     except Exception as e:
-        print("Removing task failed: {}".format(e))
+        return {
+            "statusCode": 500,
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
+                },
+            "body": json.dumps(str(e))
+            }
