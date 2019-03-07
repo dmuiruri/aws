@@ -10,10 +10,7 @@ Test item
 }
 """
 import boto3
-
-dynamodb = boto3.resource('dynamodb')
-client = boto3.client('dynamodb')
-table_name = 'todolist'
+import json
 
 dynamodb = boto3.resource('dynamodb')
 table_name = 'todolist'
@@ -26,17 +23,26 @@ def updateTaskStatus_handler(event, context):
     updated.
     """
     table = dynamodb.Table(table_name)
-    key={"id": event["queryStringParameters"]["id"]}
+    obj = json.loads(event["body"])
     try:
         resp = table.update_item(
-            Key=key,
+            Key={"id": obj["id"]},
             UpdateExpression='SET done = :val1',
-            ExpressionAttributeValues={':val1': event["queryStringParameters"]["done"]}
+            ExpressionAttributeValues={':val1': obj["done"]}
             )
-        return{
+        return {
             "statusCode": 200,
-            "headers": {"Access-Control-Allow-Origin" : "*",},
+            "headers": {
+                "Access-Control-Allow-Origin" : "*",
+                },
             "body": json.dumps(resp)
         }
     except Exception as e:
-        print("Updating a task failed: {}".format(e))
+        return {
+            "statusCode": 500,
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
+                },
+            "body": json.dumps(str(e))
+            }
+
