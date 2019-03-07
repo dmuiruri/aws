@@ -6,11 +6,13 @@ A lambda function to add a task to a dynamoDB
 Create the dynamoDB instance locally to test functionality
 """
 import boto3
+import json
 
-#dynamodb = boto3.resource('dynamodb',  endpoint_url="http://localhost:8000")  # local test
+
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 client = boto3.client('dynamodb')
 table_name = 'todolist'
+
 # Table already created successfully in first run. TODO: If table
 # exists raise an exception to that effect.
 def handler(event, context):
