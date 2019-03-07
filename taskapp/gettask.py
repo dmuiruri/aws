@@ -44,10 +44,16 @@ def gettask_handler(event, context):
         resp = table.get_item(
             Key=key
             )
-        return{
+        return {
             "statusCode": 200,
             "headers": {"Access-Control-Allow-Origin" : "*",},
             "body": json.dumps(resp["Item"])
             }
     except Exception as e:
-        print("Getting an object from table failed: {}".format(e))
+        return {
+            "statusCode": 500,
+            "headers" {
+                "Access-Control-Allow-Origin": '*'
+                }
+            "body": json.dumps(str(e))
+            }
