@@ -44,16 +44,23 @@ def gettask_handler(event, context):
         resp = table.get_item(
             Key=key
             )
-        return {
-            "statusCode": 200,
-            "headers": {"Access-Control-Allow-Origin" : "*",},
-            "body": json.dumps(resp["Item"])
-            }
+        if "Item" in resp.keys():
+            return {
+                "statusCode": 200,
+                "headers": {"Access-Control-Allow-Origin" : "*",},
+                "body": json.dumps(resp["Item"])
+                }
+        else:
+            return {
+                "statusCode": 200,
+                "headers": {"Access-Control-Allow-Origin" : "*",},
+                "body": json.dumps("Item not found")
+                }
     except Exception as e:
         return {
             "statusCode": 500,
-            "headers" {
+            "headers": {
                 "Access-Control-Allow-Origin": '*'
-                }
+                },
             "body": json.dumps(str(e))
             }

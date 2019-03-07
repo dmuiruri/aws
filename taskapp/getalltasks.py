@@ -19,6 +19,7 @@ Expected output:
 }
 """
 import boto3
+import json
 
 dynamodb = boto3.resource('dynamodb')
 table_name = 'todolist'
@@ -37,7 +38,13 @@ def fetchAll_handler(event, context):
             "headers": {
                 "Access-Control-Allow-Origin" : "*",
             },
-            "body": json.dumps(resp["Items"]) #<return value as a JSON string>
+            "body": json.dumps(resp["Items"])
         }
     except Exception as e:
-        print("Fetching all tasks failed: {}".format(e))
+        return {
+            "statusCode": 500,
+            "headers": {
+                "Access-Control-Allow-Origin": '*'
+                },
+            "body": json.dumps(str(e))
+            }
