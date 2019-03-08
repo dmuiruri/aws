@@ -19,18 +19,27 @@ def removeTask_handler(event, context):
 
     """
     table = dynamodb.Table(table_name)
+    obj = json.loads(event['body'])
     try:
-        resp = table.delete_item(
-            TableName=table_name,
-            Key=json.loads(event["body"])
-            )
-        return {
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin" : "*"
-                },
-            "body": json.dumps(resp)
-            }
+        resp = table.get_item(Key={"id": obj["id"]}).keys()
+        if 'Item' in resp:
+            resp = table.delete_item(
+                TableName=table_name,
+                Key=json.loads(event["body"])
+                )
+            return {
+                "statusCode": 200,
+                "headers": {
+                    "Access-Control-Allow-Origin" : "*"
+                    },
+                "body": json.dumps(resp)
+                }
+        else:
+            return {
+                "statusCode": 200,
+                "headers": {"Access-Control-Allow-Origin": "*",},
+                "body": json.dumps("Item does not exist")
+                }
     except Exception as e:
         return {
             "statusCode": 500,
