@@ -42,7 +42,7 @@ def gettask_handler(event, context):
     key = event['queryStringParameters']
     try:
         resp = table.get_item(
-            Key=key
+            Key={"id": key["id"]}
             )
         if "Item" in resp.keys():
             return {
