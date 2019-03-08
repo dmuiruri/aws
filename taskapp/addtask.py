@@ -47,27 +47,42 @@ def handler(event, context):
                 'WriteCapacityUnits': 5
                 }
             )
-        table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
         try:
+            table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
+            obj = json.loads(event["body"])
             resp = table.put_item(
-                Item=event["body"]
+                Item={"id": obj["id"], "name": obj["name"], "done": False}
                 )
+            return {
+                "statusCode": 200,
+                "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    },
+                "body":  json.loads(event["body"])
+                }
         except Exception as e:
-            print ("Writing to table failed with error: {}".format(e))
+            return {
+                "statusCode": 500,
+                "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    },
+                "body": json.dumps(str(e))
+                }
     except client.exceptions.ResourceInUseException:
         table = dynamodb.Table(table_name)
         try:
+            obj = json.loads(event["body"])
             resp = table.put_item(
-                Item = json.loads(event["body"]),
+                Item = {"id": obj["id"], "name": obj["name"], "done": False},
                 ReturnValues='NONE'
                 )
             return {
                 "statusCode": 200,
                 "headers": {
                     "Access-Control-Allow-Origin" : "*",
-                },
+                    },
                 "body": json.dumps(resp)
-            }
+                }
         except Exception as e:
             return {
                 "statusCode": 500,
@@ -75,4 +90,4 @@ def handler(event, context):
                     "Access-Control-Allow-Origin": "*"
                     },
                 "body": json.dumps(str(e))
-               }
+                }
