@@ -25,18 +25,24 @@ def updateTaskStatus_handler(event, context):
     table = dynamodb.Table(table_name)
     obj = json.loads(event["body"])
     try:
-        resp = table.update_item(
-            Key={"id": obj["id"]},
-            UpdateExpression='SET done = :val1',
-            ExpressionAttributeValues={':val1': obj["done"]}
-            )
-        return {
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin" : "*",
-                },
-            "body": json.dumps(resp)
-        }
+        resp = table.get_item(Key={"id": obj["id"]}).keys()
+        if 'Item' in resp:
+            resp = table.update_item(
+                Key={"id": obj["id"]},
+                UpdateExpression='SET done = :val1',
+                ExpressionAttributeValues={':val1': obj["done"]}
+                )
+            return {
+                "statusCode": 200,
+                "headers": {"Access-Control-Allow-Origin": "*",},
+                "body": json.dumps(resp)
+                }
+        else:
+            return {
+                "statusCode": 200,
+                "headers": {"Access-Control-Allow-Origin": "*",},
+                "body": json.dumps("Item doesn't exist")
+                }
     except Exception as e:
         return {
             "statusCode": 500,
@@ -45,4 +51,3 @@ def updateTaskStatus_handler(event, context):
                 },
             "body": json.dumps(str(e))
             }
-
