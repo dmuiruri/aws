@@ -1,4 +1,9 @@
-# Overview of Automating Backup Using AWS S3
+# Overview
+
+This module contains a simple static files (index.html) that forms the
+application's UI.
+
+# Automating Backup Using AWS S3
 
 This module implements a mechanisim to backup a given folder to an AWS
 bucket as soon as the contents change i.e as files are being edited
